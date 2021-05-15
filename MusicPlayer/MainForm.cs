@@ -106,8 +106,6 @@ namespace MusicPlayer
                 foreach(var val in values.Select((x, i) => new { Index = i, Value = x }))
                 {
                     var fileUrl = pathFiles.Where(p => p.Contains(val.Value.Value)).FirstOrDefault();
-                    //IWMPMedia fileMedia = player.newMedia(fileUrl);
-                    //playlist.insertItem(val.Index, fileMedia);
                     currMedia = player.newMedia(fileUrl);
                     playlist.appendItem(currMedia);
                     dt.Rows.Add(val.Value.Value);
@@ -174,12 +172,10 @@ namespace MusicPlayer
             player.controls.next();
             if (dgvNext.SelectedCells.Count > 0)
             {
+                int id = dgvNext.SelectedCells[0].RowIndex;
+                id++;
                 dgvNext.ClearSelection();
-                int result = 0;
-                string id = dgvNext.SelectedCells[0].Value.ToString();
-                result = int.TryParse(id, out result) ? result : 0;
-
-                dgvNext.Rows[result].Selected = true;
+                dgvNext.Rows[id].Selected = true;
             }
         }
 
@@ -188,12 +184,10 @@ namespace MusicPlayer
             player.controls.previous();
             if (dgvNext.SelectedCells.Count > 0)
             {
+                int id = dgvNext.SelectedCells[0].RowIndex;
+                id--;
                 dgvNext.ClearSelection();
-                int result = 0;
-                string id = dgvNext.SelectedCells[0].Value.ToString();
-                result = int.TryParse(id, out result) ? result : 0;
-
-                dgvNext.Rows[result].Selected = true;
+                dgvNext.Rows[id].Selected = true;
             }
         }
     }
