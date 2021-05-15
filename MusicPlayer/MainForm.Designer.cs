@@ -151,7 +151,6 @@ namespace MusicPlayer
             this.dgvNext.RowTemplate.Height = 25;
             this.dgvNext.Size = new System.Drawing.Size(215, 324);
             this.dgvNext.TabIndex = 5;
-            this.dgvNext.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvNext_CellContentClick);
             this.dgvNext.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvNext_CellContentDoubleClick);
             // 
             // pnlCenter

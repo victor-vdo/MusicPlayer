@@ -49,7 +49,6 @@ namespace MusicPlayer
             btnLibrary.BackColor = Color.Black;
         }
 
-
         private void btnPlay_Click(object sender, EventArgs e)
         {
            try
@@ -67,7 +66,6 @@ namespace MusicPlayer
                     btnPlay.Text = ">";
                     playState = true;
                 }
-            
             }
             catch (InvalidOperationException ex)
             {
@@ -77,11 +75,6 @@ namespace MusicPlayer
             {
                 MessageBox.Show($" Erro: {ex.Message}");
             }
-        }
-
-        private void btnHome_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -105,25 +98,26 @@ namespace MusicPlayer
                 DataTable dt = new DataTable();
                 dt.Columns.Add("Músicas", typeof(string));
                 var values = ofd1.SafeFileNames.Select( x => new {Value = x }).ToList();
-                
-                IWMPPlaylist playlist = player.playlistCollection.newPlaylist("NewPlaylist");
-                foreach(var val in values)
+
+                IWMPMedia currMedia = player.currentMedia;
+                IWMPPlaylist playlist = player.playlistCollection.newPlaylist("MusicPlayer");
+                var playListName = playlist.name;
+
+                foreach(var val in values.Select((x, i) => new { Index = i, Value = x }))
                 {
-                    IWMPMedia fileMedia = player.newMedia(val.Value);
-                    playlist.appendItem(fileMedia);
-                    dt.Rows.Add(val.Value);
+                    var fileUrl = pathFiles.Where(p => p.Contains(val.Value.Value)).FirstOrDefault();
+                    //IWMPMedia fileMedia = player.newMedia(fileUrl);
+                    //playlist.insertItem(val.Index, fileMedia);
+                    currMedia = player.newMedia(fileUrl);
+                    playlist.appendItem(currMedia);
+                    dt.Rows.Add(val.Value.Value);
                 }
-                player.currentPlaylist = playlist;
-
-                
+                player.currentPlaylist = playlist;  
                 dgvNext.DataSource = dt;
-               
-            }
-        }
+                btnPlay.Text = "=";
+                playState = false;
 
-        private void dgvNext_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-          
+            }
         }
 
         private void dgvNext_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
@@ -168,7 +162,7 @@ namespace MusicPlayer
 
         private void Player_PlayStateChange(int NewState)
         {
-            if ((WMPLib.WMPPlayState)NewState == WMPLib.WMPPlayState.wmppsStopped)
+            if ((WMPPlayState)NewState == WMPPlayState.wmppsStopped)
             {
                 //Actions on stop
                 player.controls.stop();
@@ -178,11 +172,29 @@ namespace MusicPlayer
         private void button1_Click(object sender, EventArgs e)
         {
             player.controls.next();
+            if (dgvNext.SelectedCells.Count > 0)
+            {
+                dgvNext.ClearSelection();
+                int result = 0;
+                string id = dgvNext.SelectedCells[0].Value.ToString();
+                result = int.TryParse(id, out result) ? result : 0;
+
+                dgvNext.Rows[result].Selected = true;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             player.controls.previous();
+            if (dgvNext.SelectedCells.Count > 0)
+            {
+                dgvNext.ClearSelection();
+                int result = 0;
+                string id = dgvNext.SelectedCells[0].Value.ToString();
+                result = int.TryParse(id, out result) ? result : 0;
+
+                dgvNext.Rows[result].Selected = true;
+            }
         }
     }
 }
