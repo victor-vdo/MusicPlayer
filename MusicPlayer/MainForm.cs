@@ -175,19 +175,39 @@ namespace MusicPlayer
                 int id = dgvNext.SelectedCells[0].RowIndex;
                 id++;
                 dgvNext.ClearSelection();
-                dgvNext.Rows[id].Selected = true;
+                if (id < dgvNext.Rows.Count)
+                    dgvNext.Rows[id].Selected = true;
+                else
+                {
+                    id = 0;
+                    dgvNext.Rows[id].Selected = true;
+                }
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            player.controls.previous();
             if (dgvNext.SelectedCells.Count > 0)
             {
                 int id = dgvNext.SelectedCells[0].RowIndex;
                 id--;
                 dgvNext.ClearSelection();
-                dgvNext.Rows[id].Selected = true;
+                if (id < 0)
+                { 
+                    id = dgvNext.Rows.Count-1; 
+                    dgvNext.Rows[id].Selected = true;
+                }
+                else
+                {
+                    if (id < dgvNext.Rows.Count)
+                        dgvNext.Rows[id].Selected = true;
+                    else
+                    {
+                        id = 0;
+                        dgvNext.Rows[id].Selected = true;
+                    }
+                    player.controls.previous();
+                }
             }
         }
     }
